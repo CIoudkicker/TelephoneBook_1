@@ -6,8 +6,8 @@
 
 using namespace std;
 
-class Contact
-{
+class Contact{
+
     private:
 
         int id;
@@ -21,8 +21,8 @@ class Contact
         Contact();
         Contact(int id_, std::string name_, std::string email_, std::string birthday_, std::string add_date_):
                     id(id_), name(name_), email(email_), birthday(birthday_), add_date(add_date_){}
-        int getId(){ return id; }
 
+        int getId(){ return id; }
         std::string getName(){ return name; }
         std::string getEmail(){ return email; }
         std::string getBirthday(){ return birthday; }

@@ -11,12 +11,14 @@ CONFIG += c++11
 SOURCES += \
     Book.cpp \
     Contact.cpp \
+    Exceptions.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     Book.h \
     Contact.h \
+    Exceptions.h \
     mainwindow.h
 
 FORMS += \

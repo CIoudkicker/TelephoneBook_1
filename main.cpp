@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "Contact.h"
+#include <time.h>
 
 using namespace std;
 
@@ -37,6 +38,10 @@ int main(int argc, char *argv[])
         return a->getId() > b->getId();
     });
     */
+
+    const time_t timer = time(NULL);
+
+    cout << timer << endl;
 
     sort(vect.begin(), vect.end(), [] ( Contact* a,  Contact* b){
         return a->getName() < b->getName();
