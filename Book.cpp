@@ -2,10 +2,11 @@
 
 Book::Book(){
     countContacts = 0;
+    currentWrong = new ASC_DESC_Exception("");
 }
 
 Book::~Book(){
-
+    delete currentWrong;
 }
 
 void Book::addContact(Contact *contact){
@@ -18,35 +19,47 @@ void Book::deleteContact(int id){
     countContacts--;
 }
 
-
-void Book::sortById(std::string ASC_or_DESC){
+void Book::kindOfSorting(std::string ASC_or_DESC, std::string ExceptionMessage,
+                         function<bool(Contact *a, Contact *b)> sortRuleASC,
+                         function<bool(Contact *a, Contact *b)> sortRuleDESC)
+{
     try {
         if(ASC_or_DESC == "ASC"){
-            sort(book.begin(), book.end(), [] ( Contact* a,  Contact* b){ return a->getName() < b->getName(); });
+            sort(book.begin(), book.end(), sortRuleASC);
         }else
         if (ASC_or_DESC == "DESC"){
-            sort(book.begin(), book.end(), [] ( Contact* a,  Contact* b){ return a->getName() > b->getName(); });
+            sort(book.begin(), book.end(), sortRuleDESC);
         }else{
-            ASC_DESC_Exception *sortById_Wrong = new ASC_DESC_Exception("sortById: " + ASC_DESC_Wrong->what());
-            throw sortById_Wrong;
+            delete currentWrong;
+            ASC_DESC_Exception currentWrong(ExceptionMessage);
+            throw currentWrong;
         }
     }  catch (Exceptions *e) {
         e->what();
     }
+
+}
+
+void Book::sortById(std::string ASC_or_DESC){
+    kindOfSorting(ASC_or_DESC, "sortById",
+                  [](Contact* a,  Contact* b){ return a->getId() < b->getId();},
+                  [](Contact* a,  Contact* b){ return a->getId() > b->getId();});
 }
 
 void Book::sortByName(std::string ASC_or_DESC){
-    try {
-        if(ASC_or_DESC == "ASC"){
-            sort(book.begin(), book.end(), [] ( Contact* a,  Contact* b){ return a->getName() < b->getName(); });
-        }else
-        if (ASC_or_DESC == "DESC"){
-            sort(book.begin(), book.end(), [] ( Contact* a,  Contact* b){ return a->getName() > b->getName(); });
-        }else{
-            ASC_DESC_Exception *sortByName_Wrong = new ASC_DESC_Exception("sortByName: " + ASC_DESC_Wrong->what());
-            throw sortByName_Wrong;
-        }
-    }  catch (Exceptions *e) {
-        e->what();
-    }
+    kindOfSorting(ASC_or_DESC, "sortByName",
+                  [](Contact* a,  Contact* b){ return a->getName() < b->getName();},
+                  [](Contact* a,  Contact* b){ return a->getName() > b->getName();});
+}
+
+void Book::sortByEmail(std::string ASC_or_DESC){
+    kindOfSorting(ASC_or_DESC, "sortByEmail",
+                  [](Contact* a,  Contact* b){ return a->getEmail() < b->getEmail();},
+                  [](Contact* a,  Contact* b){ return a->getEmail() > b->getEmail();});
+}
+
+void Book::sortByBirthday(std::string ASC_or_DESC){
+    kindOfSorting(ASC_or_DESC, "sortByDate",
+                  [](Contact* a,  Contact* b){ return a->getBirthday() < b->getBirthday();},
+                  [](Contact* a,  Contact* b){ return a->getBirthday() > b->getBirthday();});
 }
