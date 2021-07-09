@@ -61,7 +61,7 @@ Date_Exception_OutOfRangeOfParam::Date_Exception_OutOfRangeOfParam(Date_Exceptio
 
 }
 
-Date_Exception_ReverseOrNot::Date_Exception_ReverseOrNot(std::string arg) : Date_Exception("ReverseOrNot: " + arg + ": Wrong \"reverse date or not\" parameter"){
+Date_Exception_ReverseOrNot::Date_Exception_ReverseOrNot(std::string arg) : Date_Exception("ReverseOrNot: " + arg + ": Wrong \"reverse date or not\" parameter, be careful!"){
 
 }
 

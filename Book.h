@@ -38,7 +38,7 @@ class Book{
         void sortByName(std::string ASC_or_DESC);
         void sortByEmail(std::string ASC_or_DESC);
         void sortByBirthday(std::string ASC_or_DESC);
-
+        void sortByAddDate(std::string ASC_or_DESC);
 };
 
 #endif // BOOK_H

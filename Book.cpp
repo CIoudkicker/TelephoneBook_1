@@ -59,7 +59,14 @@ void Book::sortByEmail(std::string ASC_or_DESC){
 }
 
 void Book::sortByBirthday(std::string ASC_or_DESC){
-    kindOfSorting(ASC_or_DESC, "sortByDate",
-                  [](Contact* a,  Contact* b){ return a->getBirthday() < b->getBirthday();},
-                  [](Contact* a,  Contact* b){ return a->getBirthday() > b->getBirthday();});
+    kindOfSorting(ASC_or_DESC, "sortByBirthday",
+                  [](Contact* a,  Contact* b){ return a->getBirthday("reverse") < b->getBirthday("reverse");},
+                  [](Contact* a,  Contact* b){ return a->getBirthday("reverse") > b->getBirthday("reverse");});
 }
+
+void Book::sortByAddDate(std::string ASC_or_DESC){
+    kindOfSorting(ASC_or_DESC, "sortByAddDate",
+                  [](Contact* a,  Contact* b){ return a->getAddDate("reverse") < b->getAddDate("reverse");},
+                  [](Contact* a,  Contact* b){ return a->getAddDate("reverse") > b->getAddDate("reverse");});
+}
+
