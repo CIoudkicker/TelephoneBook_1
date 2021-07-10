@@ -20,7 +20,7 @@ class Book{
 
     private:
 
-        std::vector<Contact *> book;
+        std::vector<Contact> book;
         int countContacts;
         ASC_DESC_Exception *currentWrong;
 
@@ -28,12 +28,12 @@ class Book{
 
         Book();
         ~Book();
-        void addContact(Contact *contact);
+        void addContact(Contact &contact);
         void deleteContact(int id);
         int getCountContacts(){ return countContacts; }
         void kindOfSorting(std::string ASC_or_DESC, std::string ExceptionMessage,
-                            function<bool(Contact *a, Contact *b)> sortRuleASC,
-                            function<bool(Contact *a, Contact *b)> sortRuleDESC);
+                                 function<bool(Contact &a, Contact &b)> sortRuleASC,
+                                 function<bool(Contact &a, Contact &b)> sortRuleDESC);
         void sortById(std::string ASC_or_DESC);
         void sortByName(std::string ASC_or_DESC);
         void sortByEmail(std::string ASC_or_DESC);
