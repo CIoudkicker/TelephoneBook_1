@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     Book.cpp \
+    BookEntry.cpp \
     Contact.cpp \
     Exceptions.cpp \
     main.cpp \
@@ -17,11 +18,13 @@ SOURCES += \
 
 HEADERS += \
     Book.h \
+    BookEntry.h \
     Contact.h \
     Exceptions.h \
     mainwindow.h
 
 FORMS += \
+    BookEntry.ui \
     mainwindow.ui
 
 # Default rules for deployment.
