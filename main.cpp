@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -26,12 +29,47 @@ void fill (Book &book_1){
     book_1.addContact(con5);
 }
 
+
+void saveToJsonFile(const QString &filename, const QJsonObject &jsonobject){
+    QFile file(filename);
+
+    if(file.open(QFile::WriteOnly)){
+        QJsonDocument document(jsonobject);
+        file.write(document.toJson());
+        file.close();
+    }
+}
+
+QJsonObject loadFromJsonFile(const QString &filename){
+
+    QJsonObject json;
+    QFile file(filename);
+
+    if(file.open(QFile::WriteOnly)){
+        QJsonDocument document = QJsonDocument::fromJson(file.readAll());
+        json = document.object();
+        file.close();
+    }
+
+    return json;
+}
+
+void saveAdressBookEntryPropertiesToFile(const QJsonObject &properties)
+{
+    saveToJsonFile("AdressBookEntry.json", properties);
+}
+
+void somefunc(const QJsonObject &properties){
+
+
+}
+
 int main(int argc, char *argv[])
 {
 
     std::string f = "02020";
 
-
+    QJsonObject obj;
 
     Book book_1;
 
@@ -39,19 +77,19 @@ int main(int argc, char *argv[])
 
     book_1.sortByBirthday("ASC");
 
+    BookEntry bookEntry;
+
+    QObject::connect(&bookEntry, &BookEntry::incoming_Changes, &saveAdressBookEntryPropertiesToFile);
+
     const time_t timer = time(NULL);
 
     //cout << timer << endl;
-
-
 
     std::cout << __cplusplus << std::endl;
 
     QApplication a(argc, argv);
     MainWindow w;
-    BookEntry be;
     w.show();
-
 
     return a.exec();
 

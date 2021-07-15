@@ -2,6 +2,7 @@
 #define BOOKENTRY_H
 
 #include <QWidget>
+#include <QJsonObject>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BookEntry; }
@@ -16,10 +17,12 @@ class BookEntry : public QWidget{
         BookEntry( QWidget *parent = nullptr);
         ~BookEntry();
 
-
+    signals:
+        void incoming_Changes(const QJsonObject &changes);
 
     public slots:
         void pressed_AddButton();
+        QJsonObject toJSON();
 
     private:
 
