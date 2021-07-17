@@ -68,3 +68,11 @@ Date_Exception_ReverseOrNot::Date_Exception_ReverseOrNot(std::string arg) : Date
 Date_Exception_ReverseOrNot::Date_Exception_ReverseOrNot(Date_Exception_ReverseOrNot &arg) : Date_Exception(arg){
 
 }
+
+FileOpen_Exceptions::FileOpen_Exceptions(std::string arg) : Exceptions("FileOpen_Exceptions: " + arg + ": Couldn't open save file!"){
+
+}
+
+FileOpen_Exceptions::FileOpen_Exceptions(FileOpen_Exceptions &arg) : Exceptions(arg){
+
+}

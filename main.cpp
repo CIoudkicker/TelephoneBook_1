@@ -4,10 +4,12 @@
 #include <QFile>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QDir>
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <QDebug>
 #include "Contact.h"
 #include "BookEntry.h"
 #include "Book.h"
@@ -31,8 +33,9 @@ void fill (Book &book_1){
 
 
 void saveToJsonFile(const QString &filename, const QJsonObject &jsonobject){
+  //QFileInfo fileInfo(filename);
+  //QDir::setCurrent(fileInfo.path());
     QFile file(filename);
-
     if(file.open(QFile::WriteOnly)){
         QJsonDocument document(jsonobject);
         file.write(document.toJson());
@@ -54,20 +57,23 @@ QJsonObject loadFromJsonFile(const QString &filename){
     return json;
 }
 
+
 void saveAdressBookEntryPropertiesToFile(const QJsonObject &properties)
 {
-    saveToJsonFile("AdressBookEntry.json", properties);
+    qDebug() << "Wer";
+    saveToJsonFile("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json", properties);
 }
 
-void somefunc(const QJsonObject &properties){
-
-
+void somefunc2(const QJsonObject &properties){
+    int z = 1;
+    cout << "OPPA";
 }
 
 int main(int argc, char *argv[])
 {
 
-    std::string f = "02020";
+    QApplication a(argc, argv);
+
 
     QJsonObject obj;
 
@@ -76,19 +82,18 @@ int main(int argc, char *argv[])
     fill(book_1);
 
     book_1.sortByBirthday("ASC");
+    //saveAdressBookEntryPropertiesToFile(obj);
 
     BookEntry bookEntry;
+    //somefunc(obj);
 
-    QObject::connect(&bookEntry, &BookEntry::incoming_Changes, &saveAdressBookEntryPropertiesToFile);
+    QJsonObject ob;
 
-    const time_t timer = time(NULL);
 
-    //cout << timer << endl;
+    MainWindow w("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json");
+    QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &w, &MainWindow::addRowToTable);
+    QObject::connect(w.bookEntry, &BookEntry::saveEvent, &w, &MainWindow::saveJsonTable);
 
-    std::cout << __cplusplus << std::endl;
-
-    QApplication a(argc, argv);
-    MainWindow w;
     w.show();
 
     return a.exec();

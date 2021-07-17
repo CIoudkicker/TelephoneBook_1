@@ -16,21 +16,22 @@ BookEntry::~BookEntry(){
     delete ui;
 }
 
+QJsonArray BookEntry::toJsonArray(){
 
-void BookEntry::pressed_AddButton(){
-    ui->pushButton_Save->setText("dsad");
-    emit incoming_Changes(toJSON());
-}
+    QJsonArray JsonContact;
 
-
-QJsonObject BookEntry::toJSON(){
-
-    QJsonObject JsonContact;
-
-    JsonContact["ID"]       = ui->lineEdit_ID->text();
-    JsonContact["Name"]     = ui->lineEdit_Name->text();
-    JsonContact["Birthday"] = ui->lineEdit_Bithday->text();
-    JsonContact["Add date"] = ui->lineEdit_AddDate->text();
+    JsonContact.append(ui->lineEdit_ID->text());
+    JsonContact.append(ui->lineEdit_Name->text());
+    JsonContact.append(ui->lineEdit_Bithday->text());
+    JsonContact.append(ui->lineEdit_AddDate->text());
 
     return JsonContact;
 }
+
+
+void BookEntry::pressed_AddButton(){
+    ui->pushButton_Save->setText("dsad");
+    emit incoming_NewContact(toJsonArray());
+    emit saveEvent();
+}
+

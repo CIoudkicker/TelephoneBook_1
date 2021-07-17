@@ -93,5 +93,13 @@ class Date_Exception_ReverseOrNot : public Date_Exception
 
 };
 
+class FileOpen_Exceptions : public Exceptions{
+    public:
+
+    FileOpen_Exceptions(std::string arg);
+
+    FileOpen_Exceptions(FileOpen_Exceptions &arg);
+};
+
 
 #endif // EXCEPTIONS_H
