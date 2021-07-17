@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
     MainWindow w("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json");
     QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &w, &MainWindow::addRowToTable);
     QObject::connect(w.bookEntry, &BookEntry::saveEvent, &w, &MainWindow::saveJsonTable);
+    QObject::connect(&a, &QApplication::aboutToQuit, &w, &MainWindow::saveJsonTable);
 
     w.show();
 

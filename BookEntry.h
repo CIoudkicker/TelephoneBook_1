@@ -28,7 +28,7 @@ class BookEntry : public QWidget{
         QJsonArray toJsonArray();
 
     private:
-        QMutex mutex;
+
         Ui::BookEntry *ui;
 };
 
