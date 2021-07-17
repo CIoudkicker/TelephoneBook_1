@@ -1,11 +1,17 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QDir>
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <QDebug>
 #include "Contact.h"
+#include "BookEntry.h"
 #include "Book.h"
 #include <time.h>
 
@@ -25,30 +31,72 @@ void fill (Book &book_1){
     book_1.addContact(con5);
 }
 
+
+void saveToJsonFile(const QString &filename, const QJsonObject &jsonobject){
+  //QFileInfo fileInfo(filename);
+  //QDir::setCurrent(fileInfo.path());
+    QFile file(filename);
+    if(file.open(QFile::WriteOnly)){
+        QJsonDocument document(jsonobject);
+        file.write(document.toJson());
+        file.close();
+    }
+}
+
+QJsonObject loadFromJsonFile(const QString &filename){
+
+    QJsonObject json;
+    QFile file(filename);
+
+    if(file.open(QFile::WriteOnly)){
+        QJsonDocument document = QJsonDocument::fromJson(file.readAll());
+        json = document.object();
+        file.close();
+    }
+
+    return json;
+}
+
+
+void saveAdressBookEntryPropertiesToFile(const QJsonObject &properties)
+{
+    qDebug() << "Wer";
+    saveToJsonFile("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json", properties);
+}
+
+void somefunc2(const QJsonObject &properties){
+    int z = 1;
+    cout << "OPPA";
+}
+
 int main(int argc, char *argv[])
 {
 
-    std::string f = "02020";
+    QApplication a(argc, argv);
 
 
+    QJsonObject obj;
 
     Book book_1;
 
     fill(book_1);
 
     book_1.sortByBirthday("ASC");
+    //saveAdressBookEntryPropertiesToFile(obj);
 
-    const time_t timer = time(NULL);
+    BookEntry bookEntry;
+    //somefunc(obj);
 
-    //cout << timer << endl;
+    QJsonObject ob;
 
 
+    MainWindow w("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json");
+    QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &w, &MainWindow::addRowToTable);
+    QObject::connect(w.bookEntry, &BookEntry::saveEvent, &w, &MainWindow::saveJsonTable);
+    QObject::connect(&a, &QApplication::aboutToQuit, &w, &MainWindow::saveJsonTable);
 
-    std::cout << __cplusplus << std::endl;
-
-    QApplication a(argc, argv);
-    MainWindow w;
     w.show();
+
     return a.exec();
 
 }
