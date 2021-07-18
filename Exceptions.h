@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <QString>
+#include <QDebug>
 
 using namespace std;
 
@@ -21,7 +23,7 @@ class Exceptions{
         Exceptions(Exceptions &arg);
         ~Exceptions();
 
-        std::string what();
+        QString what();
 };
 
 

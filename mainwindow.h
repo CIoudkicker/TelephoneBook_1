@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "Exceptions.h"
-
+#include "Book.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -34,10 +34,11 @@ class MainWindow : public QMainWindow
         void fillTableView();
         bool saveJsonTable();
         bool loadJsontable();
-        void addRowToTable(const QJsonArray &jsonRow);
+        virtual void addRowToTable(const QJsonArray &jsonRow);
 
         QString filename;
 
+        Book book;
         BookEntry *bookEntry;
         QStandardItemModel itemModel;
 

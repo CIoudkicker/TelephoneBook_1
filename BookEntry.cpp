@@ -22,6 +22,7 @@ QJsonArray BookEntry::toJsonArray(){
 
     JsonContact.append(ui->lineEdit_ID->text());
     JsonContact.append(ui->lineEdit_Name->text());
+    JsonContact.append(ui->lineEdit_Email->text());
     JsonContact.append(ui->lineEdit_Bithday->text());
     JsonContact.append(ui->lineEdit_AddDate->text());
 

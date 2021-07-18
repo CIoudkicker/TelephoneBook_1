@@ -13,6 +13,7 @@
 #include "Contact.h"
 #include "BookEntry.h"
 #include "Book.h"
+#include "Adapter_Creator.h"
 #include <time.h>
 
 using namespace std;
@@ -91,7 +92,12 @@ int main(int argc, char *argv[])
 
 
     MainWindow w("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json");
-    QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &w, &MainWindow::addRowToTable);
+    Adapter_Creator adapt_create(&w);
+    //MainWindow *fd = new Adapter_Creator(&w);
+
+    QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &adapt_create, &Adapter_Creator::addRowToTable);
+    //QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, fd, &Adapter_Creator::addRowToTable);
+
     QObject::connect(w.bookEntry, &BookEntry::saveEvent, &w, &MainWindow::saveJsonTable);
     QObject::connect(&a, &QApplication::aboutToQuit, &w, &MainWindow::saveJsonTable);
 

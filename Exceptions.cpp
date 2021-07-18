@@ -16,9 +16,10 @@ Exceptions::~Exceptions(){
     //delete message;
 }
 
-std::string Exceptions::what(){
-    cout << message << endl;
-    return message;
+QString Exceptions::what(){
+    QString s = QString::fromStdString(message);
+    qDebug() << s;
+    return s;
 }
 
 ASC_DESC_Exception::ASC_DESC_Exception(std::string arg) : Exceptions("ASC_DESC_Exception: " + arg + ": Wrong \"ASC\" or \"DESC\" parameter. Please, write parameter correctly"){

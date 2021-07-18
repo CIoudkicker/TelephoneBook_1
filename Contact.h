@@ -23,7 +23,11 @@ struct date{ // Возможно создал велосипед, но я не �
         int lenght = 0;
         int count = 0;
         // функция чисто для того чтобы сформировать строку по определенному шаблону
-        std::function<std::string(int, std::string)> templateNum = [](int len, std::string s_){
+        std::function<std::string(int, std::string)> templateNum = [&string_date](int len, std::string s_){
+            if(len < (int)s_.size()){
+                Date_Exception_OutOfRangeOfParam da("constructor date(" + string_date +")");
+                throw da;
+            }
             int position = len - (int)s_.size();
             std::string s(position, '0');
             s.insert( position, s_);
@@ -113,11 +117,23 @@ class Contact{
         date birthday;
         date add_date;
 
+        int countOfParameters = 5;
+
     public:
 
         Contact();
         Contact(int id_, std::string name_, std::string email_, date birthday_, date add_date_):
                     id(id_), name(name_), email(email_), birthday(birthday_), add_date(add_date_){}
+
+        Contact(const std::vector<std::string> &vectorParam){
+            if((int)vectorParam.size() == countOfParameters){
+                id = std::stoi(vectorParam[0]);
+                name = vectorParam[1];
+                email = vectorParam[2];
+                birthday = date(vectorParam[3]);
+                add_date = date(vectorParam[4]);
+            }
+        }
 
         int getId(){ return id; }
         std::string getName(){ return name; }

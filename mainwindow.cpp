@@ -13,7 +13,7 @@ MainWindow::MainWindow(QString filename, QWidget *parent)
 
     ui->centralwidget->layout()->addWidget(bookEntry);
 
-    QStringList headers = QStringList() << "ID" << "Name" << "Birthday" << "Add date";
+    QStringList headers = QStringList() << "ID" << "Name" << "Email" << "Birthday" << "Add date";
 
     itemModel.setHorizontalHeaderLabels(headers);
     itemModel.setColumnCount(headers.size());
