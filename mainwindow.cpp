@@ -1,11 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Adapter_Creator.h"
 
+class Adapter_Creator;
 
 MainWindow::MainWindow(QString filename, QWidget *parent)
     : QMainWindow(parent),
-      ui(new Ui::MainWindow),
-      filename(filename)
+      filename(filename),
+      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -52,7 +54,7 @@ bool MainWindow::saveJsonTable(){
 
         for(int j = 0; j < itemModel.columnCount(); j++){
             QString s = itemModel.item(i, j)->text();
-            row.append(QJsonValue(itemModel.item(i, j)->text()));
+            row.append(QJsonValue(s));
         }
 
         jsonArr.append(row);
@@ -83,19 +85,15 @@ bool MainWindow::loadJsontable(){
     }
 
     const int rowCount = json["rowCount"].toInt();
-    const int columnCount = json["columnCount"].toInt();
+
 
     QJsonArray data = json["User data"].toArray();
 
-    itemModel.setRowCount(rowCount);
-    itemModel.setColumnCount(columnCount);
+    Adapter_Creator adapt_create(this);
 
     for(int i = 0; i < rowCount; i++){
         QJsonArray row = data[i].toArray();
-
-        for(int j = 0; j < columnCount; j++){
-            itemModel.setItem(i, j, new QStandardItem(row[j].toString()));
-        }
+        adapt_create.addRowToTable(row);
     }
 
     return true;
