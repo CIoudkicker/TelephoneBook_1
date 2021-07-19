@@ -9,6 +9,15 @@ void MainWindow::updateTable(){
     adapt_create.updateTable();
 }
 
+void MainWindow::deleteRow(){
+    QItemSelectionModel *selections = ui->tableView->selectionModel();
+    QModelIndexList selected = selections->selectedIndexes();
+
+    foreach(QModelIndex index, selected){
+        itemModel.removeRow(index.row());
+    }
+}
+
 MainWindow::MainWindow(QString filename, QWidget *parent)
     : QMainWindow(parent),
       filename(filename),
@@ -46,6 +55,8 @@ MainWindow::MainWindow(QString filename, QWidget *parent)
                 updateTable();
             }
     );
+
+    connect(ui->pushButton_Delete, &QPushButton::clicked, this, &MainWindow::deleteRow);
 }
 
 MainWindow::~MainWindow()

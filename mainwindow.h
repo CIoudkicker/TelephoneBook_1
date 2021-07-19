@@ -12,6 +12,10 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QItemSelectionModel>
+#include <QModelIndexList>
+#include <QMap>
+#include <QList>
 #include <QByteArray>
 #include <QThread>
 #include <stdio.h>
@@ -53,6 +57,7 @@ class MainWindow : public QMainWindow
 
         virtual void addRowToTable(const QJsonArray &jsonRow);
         virtual void updateTable();
+        void deleteRow();
 
         void initiateSort();
 
