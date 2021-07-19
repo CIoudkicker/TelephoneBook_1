@@ -18,6 +18,49 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QComboBox" name="comboBox_SortBook">
+        <item>
+         <property name="text">
+          <string>Sort by ID</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sort by name</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sort by email</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sort by birthday</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sort by add date</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox_ASCorDESC">
+        <item>
+         <property name="text">
+          <string>Ascending</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Descending</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <widget class="QTableView" name="tableView"/>
       </item>
       <item>

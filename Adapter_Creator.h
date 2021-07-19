@@ -1,23 +1,35 @@
-#ifndef ADAPTER_H
-#define ADAPTER_H
-#include <mainwindow.h>
-#include "Contact.h"
-#include "Book.h"
+
+#ifndef _ADAPTER_CREATOR_H_
+#define _ADAPTER_CREATOR_H_
+
+#include "mainwindow.h"
+
+#include <QStandardItemModel>
+#include <QStringList>
+#include <QFile>
+#include <QString>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QByteArray>
+#include <QThread>
+#include <stdio.h>
+#include <iostream>
 
 
-class Adapter_Creator : public Contact, public MainWindow
+class Adapter_Creator : public Book, public MainWindow
 {
     public:
 
-        Adapter_Creator(MainWindow *mainwindow_) : mainwindow(mainwindow_){};
+        Adapter_Creator(MainWindow *mainwindow_);
 
         void addRowToTable(const QJsonArray &jsonRow) override;
+        void updateTable() override;
 
     private:
 
         MainWindow *mainwindow;
 
-
 };
 
-#endif // ADAPTER_H
+#endif // _ADAPTER_CREATOR_H_

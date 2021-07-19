@@ -1,5 +1,6 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+
+#ifndef _MAINWINDOW_H_
+#define _MAINWINDOW_H_
 
 #include <QMainWindow>
 
@@ -30,13 +31,30 @@ class MainWindow : public QMainWindow
 
     public:
 
+        enum SortType{
+            SortById,
+            SortByName,
+            SortByEmail,
+            SortByBirthday,
+            SortByAddDate
+        };
+
+        enum ASC_or_DESC{
+            ASC,
+            DESC
+        };
+
         MainWindow(QString filename = NULL, QWidget *parent = nullptr);
         ~MainWindow();
 
         void fillTableView();
         bool saveJsonTable();
         bool loadJsontable();
+
         virtual void addRowToTable(const QJsonArray &jsonRow);
+        virtual void updateTable();
+
+        void initiateSort();
 
         QString filename;
 
@@ -46,6 +64,9 @@ class MainWindow : public QMainWindow
 
 
     private:
+
+        int currentSort;
+        int asc_or_desc;
         Ui::MainWindow *ui;
 };
-#endif // MAINWINDOW_H
+#endif // _MAINWINDOW_H_

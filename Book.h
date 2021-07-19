@@ -18,9 +18,8 @@ using namespace std;
 class Book{
 
     private:
-
-        std::vector<Contact> book;
         int countContacts;
+        std::vector<Contact> book;
         ASC_DESC_Exception *currentWrong;
 
     public:
@@ -30,14 +29,17 @@ class Book{
         void addContact(Contact &contact);
         void deleteContact(int id);
         int getCountContacts(){ return countContacts; }
+        std::vector<Contact> getBookOfContacts(){ return book; }
+
+
         void kindOfSorting(std::string ASC_or_DESC, std::string ExceptionMessage,
                                  function<bool(Contact &a, Contact &b)> sortRuleASC,
                                  function<bool(Contact &a, Contact &b)> sortRuleDESC);
-        void sortById(std::string ASC_or_DESC);
-        void sortByName(std::string ASC_or_DESC);
-        void sortByEmail(std::string ASC_or_DESC);
-        void sortByBirthday(std::string ASC_or_DESC);
-        void sortByAddDate(std::string ASC_or_DESC);
+        virtual void sortById(std::string ASC_or_DESC);
+        virtual void sortByName(std::string ASC_or_DESC);
+        virtual void sortByEmail(std::string ASC_or_DESC);
+        virtual void sortByBirthday(std::string ASC_or_DESC);
+        virtual void sortByAddDate(std::string ASC_or_DESC);
 };
 
 #endif // BOOK_H

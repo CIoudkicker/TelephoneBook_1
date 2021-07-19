@@ -140,6 +140,7 @@ class Contact{
         std::string getEmail(){ return email; }
         std::string getBirthday(std::string reverse){ return birthday.getDate(reverse); }
         std::string getAddDate(std::string reverse){ return add_date.getDate(reverse); }
+        int getCountOfParameters(){ return countOfParameters; }
 
 };
 
