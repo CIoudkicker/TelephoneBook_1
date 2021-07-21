@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     QJsonObject ob;
 
 
-    MainWindow w("E:\\Qt Projects\\TelephoneBook_1\\AdressBookEntry.json");
+    MainWindow w;
 
     //MainWindow *fd = new Adapter_Creator(&w);
 

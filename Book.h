@@ -28,6 +28,7 @@ class Book{
         ~Book();
         void addContact(Contact &contact);
         void deleteContact(int id);
+        void clearBook();
         int getCountContacts(){ return countContacts; }
         std::vector<Contact> getBookOfContacts(){ return book; }
 

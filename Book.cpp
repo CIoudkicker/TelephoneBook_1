@@ -19,6 +19,12 @@ void Book::deleteContact(int id){
     countContacts--;
 }
 
+void Book::clearBook(){
+    book.clear();
+    countContacts = 0;
+}
+
+
 void Book::kindOfSorting(std::string ASC_or_DESC, std::string ExceptionMessage,
                          function<bool(Contact &a, Contact &b)> sortRuleASC,
                          function<bool(Contact &a, Contact &b)> sortRuleDESC)
