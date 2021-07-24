@@ -4,14 +4,9 @@
 #include "ui_mainwindow.h"
 #include "Adapter_Creator.h"
 
-void MainWindow::updateTable(){
-    Adapter_Creator adapt_create(this);
-    adapt_create.updateTable();
-}
 
-MainWindow::MainWindow(QString filename, QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      filename(filename),
       ui(new Ui::MainWindow)
 {
 
@@ -21,13 +16,10 @@ MainWindow::MainWindow(QString filename, QWidget *parent)
 
     ui->centralwidget->layout()->addWidget(bookEntry);
 
-
     QStringList headers = QStringList() << "ID" << "Name" << "Email" << "Birthday" << "Add date";
 
     itemModel.setHorizontalHeaderLabels(headers);
     itemModel.setColumnCount(headers.size());
-
-    loadJsontable();
 
     ui->tableView->setModel(&itemModel);
 
@@ -46,6 +38,76 @@ MainWindow::MainWindow(QString filename, QWidget *parent)
                 updateTable();
             }
     );
+
+    connect(ui->pushButton_Delete, &QPushButton::clicked, this, &MainWindow::deleteRow);
+    connect(ui->pushButton_RestoreTable, &QPushButton::clicked, this, &MainWindow::messageAboutResetTable);
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
+}
+
+void MainWindow::changeContact(QStandardItem *item){
+    int m = item->row();
+    int n = item->column();
+    std::string s = itemModel.item(m,n)->text().toStdString();
+
+    Contact &c = book[m];
+
+    switch (n) {
+        case 0: c.setId(s); break;
+        case 1: c.setName(s); break;
+        case 2: c.setEmail(s); break;
+        case 3: c.setBirthday(s); break;
+        case 4: c.setAddDate(s); break;
+    }
+}
+
+void MainWindow::messageAboutResetTable(){
+
+    QMessageBox::StandardButton resetOrNot;
+    resetOrNot = QMessageBox::question(this, "Reset table", "Are you sure you want to reset table?",
+                                       QMessageBox::Yes | QMessageBox::No);
+    if(resetOrNot == QMessageBox::Yes){
+        backUpTable();
+    }
+    else{
+        return;
+    }
+
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event){
+
+
+    // Данный код нужен для того чтобы всегда держать ширину колонок таблицы в оптимальном состоянии
+    // при изменении размера окна
+    ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+
+
+    ui->tableView->horizontalHeader()->adjustSize();
+
+
+    int widgetWidth = ui->tableView->viewport()->size().width();
+    int tableWidth = 0;
+
+    for(int i = 0; i< itemModel.columnCount(); ++i)
+        tableWidth += ui->tableView->horizontalHeader()->sectionSize(i);
+
+    if(tableWidth > widgetWidth){
+        return;
+    }
+
+    double scale = (double)widgetWidth/tableWidth;
+    for(int i = 0; i< itemModel.columnCount(); ++i){
+
+        int selfMadeSize = ui->tableView->horizontalHeader()->sectionSize(i) * scale;
+        int hintSize = ui->tableView->horizontalHeader()->sectionSize(i);
+        if(selfMadeSize < hintSize) ui->tableView->setColumnWidth(i, hintSize);
+        else ui->tableView->setColumnWidth(i, selfMadeSize);
+
+    }
+    ui->tableView->horizontalHeader()->setCascadingSectionResizes(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +121,7 @@ bool MainWindow::saveJsonTable(){
     QFile file(filename);
 
     if(!(file.open(QFile::WriteOnly))){
-        qWarning("Couldn't open save file.");
+        qWarning("saveJsonTable: Couldn't open save file.");
         return false;
     }
 
@@ -91,10 +153,15 @@ bool MainWindow::saveJsonTable(){
 }
 
 bool MainWindow::loadJsontable(){
+
     QFile file(filename);
 
-    if(!(file.open(QFile::ReadOnly))){
-        qWarning("Couldn't open save file.");
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
+    if(file.open(QFile::ReadOnly)){
+        qWarning("loadJsontable: Success open!");
+    }else{
+        qWarning("loadJsontable: Couldn't open save file.");
         return false;
     }
 
@@ -102,7 +169,6 @@ bool MainWindow::loadJsontable(){
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
     QJsonObject json = loadDoc.object();
 
-    itemModel.removeRows(0, itemModel.rowCount());
 
     int rowCount = json["rowCount"].toInt();
     currentSort =  json["sortType"].toInt();
@@ -122,6 +188,51 @@ bool MainWindow::loadJsontable(){
 
     initiateSort();
     updateTable();
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
+    return true;
+}
+
+bool MainWindow::backUpTable(){
+
+    QFile file(backUpFileName);
+
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
+    if(file.open(QFile::ReadOnly)){
+        qWarning("loadJsontable: Success open!");
+    }else{
+        qWarning("loadJsontable: Couldn't open save file.");
+        return false;
+    }
+
+    QByteArray saveData = file.readAll();
+    QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
+    QJsonObject json = loadDoc.object();
+
+    book.clearBook();
+
+    int rowCount = json["rowCount"].toInt();
+    currentSort =  json["sortType"].toInt();
+    asc_or_desc =  json["ASC_or_DESC"].toInt();
+
+    ui->comboBox_SortBook->setCurrentIndex(currentSort);
+    ui->comboBox_ASCorDESC->setCurrentIndex(asc_or_desc);
+
+    QJsonArray data = json["User data"].toArray();
+
+    Adapter_Creator adapt_create(this);
+
+    for(int i = 0; i < rowCount; i++){
+        QJsonArray row = data[i].toArray();
+        adapt_create.addRowToTable(row);
+    }
+
+    initiateSort();
+    updateTable();
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 
     return true;
 }
@@ -153,5 +264,26 @@ void MainWindow::initiateSort(){
         case SortByBirthday: book.sortByBirthday(ASC_or_DESC); break;
         case SortByAddDate:  book.sortByAddDate(ASC_or_DESC); break;
     }
+}
+
+void MainWindow::updateTable(){
+    Adapter_Creator adapt_create(this);
+    adapt_create.updateTable();
+}
+
+void MainWindow::deleteRow(){
+    QItemSelectionModel *selections = ui->tableView->selectionModel();
+    QModelIndexList selected = selections->selectedIndexes();
+
+    QModelIndex index = selected.first();
+
+    for(int i = 0; i < selected.size(); i++){
+        itemModel.removeRow(index.row());
+    }
+}
+
+void MainWindow::show(){
+    loadJsontable();
+    this->QMainWindow::show();
 }
 

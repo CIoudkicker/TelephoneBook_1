@@ -12,8 +12,16 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QItemSelectionModel>
+#include <QModelIndexList>
+#include <QMap>
+#include <QList>
 #include <QByteArray>
 #include <QThread>
+#include <QCoreApplication>
+#include <QHeaderView>
+#include <QSizePolicy>
+#include <QMessageBox>
 #include <stdio.h>
 #include <iostream>
 
@@ -44,19 +52,28 @@ class MainWindow : public QMainWindow
             DESC
         };
 
-        MainWindow(QString filename = NULL, QWidget *parent = nullptr);
+        MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
-        void fillTableView();
         bool saveJsonTable();
         bool loadJsontable();
+        bool backUpTable();
+
 
         virtual void addRowToTable(const QJsonArray &jsonRow);
         virtual void updateTable();
+        void deleteRow();
+
+
+        void show();
+
 
         void initiateSort();
 
-        QString filename;
+        void resizeEvent(QResizeEvent *event) override;
+        void messageAboutResetTable();
+
+        void changeContact(QStandardItem *item);
 
         Book book;
         BookEntry *bookEntry;
@@ -64,7 +81,9 @@ class MainWindow : public QMainWindow
 
 
     private:
-
+        QString nameOfFile = "TelBook";
+        QString filename = QCoreApplication::applicationDirPath() + "/" + nameOfFile + ".json";
+        QString backUpFileName = QCoreApplication::applicationDirPath() + "/" + nameOfFile + "_BackUp.json";
         int currentSort;
         int asc_or_desc;
         Ui::MainWindow *ui;
