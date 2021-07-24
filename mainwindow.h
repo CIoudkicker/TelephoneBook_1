@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QHeaderView>
 #include <QSizePolicy>
+#include <QMessageBox>
 #include <stdio.h>
 #include <iostream>
 
@@ -54,7 +55,6 @@ class MainWindow : public QMainWindow
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
-        void fillTableView();
         bool saveJsonTable();
         bool loadJsontable();
         bool backUpTable();
@@ -71,7 +71,9 @@ class MainWindow : public QMainWindow
         void initiateSort();
 
         void resizeEvent(QResizeEvent *event) override;
-        void some();
+        void messageAboutResetTable();
+
+        void changeContact(QStandardItem *item);
 
         Book book;
         BookEntry *bookEntry;

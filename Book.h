@@ -41,6 +41,10 @@ class Book{
         virtual void sortByEmail(std::string ASC_or_DESC);
         virtual void sortByBirthday(std::string ASC_or_DESC);
         virtual void sortByAddDate(std::string ASC_or_DESC);
+
+        Contact& operator[](const int index){
+            return book[index];
+        }
 };
 
 #endif // BOOK_H

@@ -10,8 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow)
 {
 
-
-
     ui->setupUi(this);
 
     bookEntry = new BookEntry(this);
@@ -22,8 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     itemModel.setHorizontalHeaderLabels(headers);
     itemModel.setColumnCount(headers.size());
-
-    //ui->tableView->horizontalHeader()->setStretchLastSection(true);
 
     ui->tableView->setModel(&itemModel);
 
@@ -44,20 +40,39 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
     connect(ui->pushButton_Delete, &QPushButton::clicked, this, &MainWindow::deleteRow);
-    connect(ui->pushButton_RestoreTable, &QPushButton::clicked, this, &MainWindow::backUpTable);
+    connect(ui->pushButton_RestoreTable, &QPushButton::clicked, this, &MainWindow::messageAboutResetTable);
 
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 
-    connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &MainWindow::some);
 }
 
-void MainWindow::some(){
-    static int tableWidth = 0;
-    tableWidth = 0;
-    for(int i = 0; i< itemModel.columnCount(); ++i)
-        tableWidth += ui->tableView->horizontalHeader()->sectionSize(i);
+void MainWindow::changeContact(QStandardItem *item){
+    int m = item->row();
+    int n = item->column();
+    std::string s = itemModel.item(m,n)->text().toStdString();
 
-    //qDebug() << tableWidth;
+    Contact &c = book[m];
 
+    switch (n) {
+        case 0: c.setId(s); break;
+        case 1: c.setName(s); break;
+        case 2: c.setEmail(s); break;
+        case 3: c.setBirthday(s); break;
+        case 4: c.setAddDate(s); break;
+    }
+}
+
+void MainWindow::messageAboutResetTable(){
+
+    QMessageBox::StandardButton resetOrNot;
+    resetOrNot = QMessageBox::question(this, "Reset table", "Are you sure you want to reset table?",
+                                       QMessageBox::Yes | QMessageBox::No);
+    if(resetOrNot == QMessageBox::Yes){
+        backUpTable();
+    }
+    else{
+        return;
+    }
 
 }
 
@@ -65,6 +80,7 @@ void MainWindow::resizeEvent(QResizeEvent *event){
 
 
     // Данный код нужен для того чтобы всегда держать ширину колонок таблицы в оптимальном состоянии
+    // при изменении размера окна
     ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 
 
@@ -140,6 +156,8 @@ bool MainWindow::loadJsontable(){
 
     QFile file(filename);
 
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
     if(file.open(QFile::ReadOnly)){
         qWarning("loadJsontable: Success open!");
     }else{
@@ -150,8 +168,6 @@ bool MainWindow::loadJsontable(){
     QByteArray saveData = file.readAll();
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
     QJsonObject json = loadDoc.object();
-
-    itemModel.removeRows(0, itemModel.rowCount());
 
 
     int rowCount = json["rowCount"].toInt();
@@ -173,12 +189,16 @@ bool MainWindow::loadJsontable(){
     initiateSort();
     updateTable();
 
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
     return true;
 }
 
 bool MainWindow::backUpTable(){
 
     QFile file(backUpFileName);
+
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 
     if(file.open(QFile::ReadOnly)){
         qWarning("loadJsontable: Success open!");
@@ -191,7 +211,6 @@ bool MainWindow::backUpTable(){
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
     QJsonObject json = loadDoc.object();
 
-    itemModel.removeRows(0, itemModel.rowCount());
     book.clearBook();
 
     int rowCount = json["rowCount"].toInt();
@@ -212,6 +231,8 @@ bool MainWindow::backUpTable(){
 
     initiateSort();
     updateTable();
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 
     return true;
 }
@@ -254,7 +275,9 @@ void MainWindow::deleteRow(){
     QItemSelectionModel *selections = ui->tableView->selectionModel();
     QModelIndexList selected = selections->selectedIndexes();
 
-    foreach(QModelIndex index, selected){
+    QModelIndex index = selected.first();
+
+    for(int i = 0; i < selected.size(); i++){
         itemModel.removeRow(index.row());
     }
 }
