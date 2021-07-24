@@ -279,6 +279,7 @@ void MainWindow::deleteRow(){
 
     for(int i = 0; i < selected.size(); i++){
         itemModel.removeRow(index.row());
+        book.deleteContact(index.row());
     }
 }
 

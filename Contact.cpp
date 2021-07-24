@@ -44,6 +44,8 @@ void date::setDate(const std::string &string_date){
     int start = 0;
     int lenght = 0;
     int count = 0;
+
+    if(!date_int_string.empty()) date_int_string.clear();
     // функция чисто для того чтобы сформировать строку по определенному шаблону
     std::function<std::string(int, std::string)> templateNum = [&string_date](int len, std::string s_){
         if(len < (int)s_.size()){
