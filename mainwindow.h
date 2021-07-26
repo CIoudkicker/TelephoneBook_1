@@ -14,13 +14,9 @@
 #include <QJsonObject>
 #include <QItemSelectionModel>
 #include <QModelIndexList>
-#include <QMap>
-#include <QList>
 #include <QByteArray>
-#include <QThread>
 #include <QCoreApplication>
 #include <QHeaderView>
-#include <QSizePolicy>
 #include <QMessageBox>
 #include <stdio.h>
 #include <iostream>

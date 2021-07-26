@@ -4,15 +4,8 @@
 
 #include "mainwindow.h"
 
-#include <QStandardItemModel>
-#include <QStringList>
-#include <QFile>
 #include <QString>
 #include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QByteArray>
-#include <QThread>
 #include <stdio.h>
 #include <iostream>
 

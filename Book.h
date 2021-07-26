@@ -11,8 +11,6 @@
 #include "Contact.h"
 #include "Exceptions.h"
 
-
-
 using namespace std;
 
 class Book{

@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
-#include <iomanip>
 #include <stdio.h>
 #include "Exceptions.h"
 

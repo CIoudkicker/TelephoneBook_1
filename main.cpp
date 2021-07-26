@@ -3,19 +3,9 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include <QFile>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QDir>
 #include <stdio.h>
 #include <iostream>
-#include <vector>
-#include <string>
-#include <QDebug>
-#include "Contact.h"
-#include "BookEntry.h"
-#include "Book.h"
-#include <time.h>
+
 
 #include "Adapter_Creator.h"
 
