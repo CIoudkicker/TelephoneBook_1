@@ -31,7 +31,6 @@ QJsonArray BookEntry::toJsonArray(){
 
 
 void BookEntry::pressed_AddButton(){
-    ui->pushButton_Save->setText("dsad");
     emit incoming_NewContact(toJsonArray());
     emit saveEvent();
 }

@@ -16,10 +16,28 @@ Exceptions::~Exceptions(){
     //delete message;
 }
 
-QString Exceptions::what(){
-    QString s = QString::fromStdString(message);
-    qDebug() << s;
-    return s;
+void Exceptions::what(){
+
+    if(executeOnce){
+        QString s = QString::fromStdString(message);
+        qDebug() << s;
+        executeOnce = false;
+    }
+    throw this;
+}
+
+void Exceptions::what(MessageBoxShow msg_box){
+
+    if(executeOnce){
+        QString s = QString::fromStdString(message);
+        qDebug() << s;
+        if(msg_box == MessageBoxShow::Show){
+            QWidget widget;
+            QMessageBox::warning(&widget, "Exception", s, QMessageBox::Ok, QMessageBox::Ok);
+        }
+        executeOnce = false;
+    }
+    throw this;
 }
 
 ASC_DESC_Exception::ASC_DESC_Exception(std::string arg) : Exceptions("ASC_DESC_Exception: " + arg + ": Wrong \"ASC\" or \"DESC\" parameter. Please, write parameter correctly"){
@@ -33,6 +51,9 @@ ASC_DESC_Exception::ASC_DESC_Exception(ASC_DESC_Exception &arg) : Exceptions(arg
 Date_Exception::Date_Exception(std::string arg) : Exceptions("Date_Exception: " + arg + ": Wrong data parameter. Please, write parameter correctly"){
 
 }
+
+void Date_Exception::what(){ Exceptions::what(Show); };
+
 
 Date_Exception::Date_Exception(Date_Exception &arg) : Exceptions(arg){
 

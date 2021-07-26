@@ -57,11 +57,11 @@ class Contact{
         std::string getAddDate(std::string reverse){ return add_date.getDate(reverse); }
         int getCountOfParameters(){ return countOfParameters; }
 
-        void setId(std::string id_);
-        void setName(std::string name_);
-        void setEmail(std::string email_);
-        void setBirthday(std::string birthday_);
-        void setAddDate(std::string birthday_);
+        void setId(const std::string &id_);
+        void setName(const std::string &name_);
+        void setEmail(const std::string &email_);
+        void setBirthday(const std::string &birthday_);
+        void setAddDate(const std::string &birthday_);
 
 
         std::string operator[](const int index);

@@ -49,7 +49,7 @@ void date::setDate(const std::string &string_date){
     // функция чисто для того чтобы сформировать строку по определенному шаблону
     std::function<std::string(int, std::string)> templateNum = [&string_date](int len, std::string s_){
         if(len < (int)s_.size()){
-            Date_Exception_OutOfRangeOfParam da("constructor date(" + string_date +")");
+            Exceptions *da = new Date_Exception_OutOfRangeOfParam("constructor date(" + string_date +")");
             throw da;
         }
         int position = len - (int)s_.size();
@@ -80,21 +80,22 @@ void date::setDate(const std::string &string_date){
                 lenght = 0;
             }
             else{
-                Date_Exception_AlphaInside da("constructor date(" + string_date +")");
+                Exceptions *da = new Date_Exception_AlphaInside("constructor date(" + string_date +")");
                 throw da;
             }
         }
         if(date_int_string.size() != 3){
-            Date_Exception_WrongCountOfParameters da("constructor date(" + string_date +")");
+            Exceptions *da = new Date_Exception_WrongCountOfParameters("constructor date(" + string_date +")");
             throw da;
         }
-        Date_Exception_OutOfRangeOfParam da("constructor date(" + string_date +")");
+        Exceptions *da = new Date_Exception_OutOfRangeOfParam("constructor date(" + string_date +")");
 
         if (!(0 < date_int_string[0].first && date_int_string[0].first < 32)) throw da;
         if (!(0 < date_int_string[1].first && date_int_string[1].first < 13)) throw da;
         if (!(0 < date_int_string[2].first && date_int_string[2].first < 10000)) throw da;
-    }  catch (Exceptions &e) {
-        e.what();
+        delete da;
+    }  catch (Exceptions *e) {
+        e->what();
     }
 }
 
@@ -117,28 +118,28 @@ Contact::Contact(const std::vector<std::string> &vectorParam){
     }
 }
 
-void Contact::setId(std::string id_){
+void Contact::setId(const std::string &id_){
     bool is = true;
-    for(char &c : id_){
+    for(const char &c : id_){
         if(!std::isdigit(c)) is = false;
     }
     if(is) id = std::stoi(id_);
 
 }
 
-void Contact::setName(std::string name_){
-    name = name_;
+void Contact::setName(const std::string &name_){
+     name = name_;
 }
 
-void Contact::setEmail(std::string email_){
+void Contact::setEmail(const std::string &email_){
     email = email_;
 }
 
-void Contact::setBirthday(std::string birthday_){
+void Contact::setBirthday(const std::string &birthday_){
     birthday.setDate(birthday_);
 }
 
-void Contact::setAddDate(std::string birthday_){
+void Contact::setAddDate(const std::string &birthday_){
     birthday.setDate(birthday_);
 }
 

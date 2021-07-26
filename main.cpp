@@ -21,22 +21,53 @@
 
 using namespace std;
 
+
+
+class MyApplication : public QApplication{
+
+    public:
+
+        MainWindow *w;
+
+        MyApplication(int& argc_, char** argv_) :
+            QApplication(argc_, argv_){};
+
+        void setMainWidget(MainWindow *w_){
+            w = w_;
+        }
+
+        void startProg(){
+                w->show();
+                this->exec();
+        }
+
+        virtual bool notify(QObject* receiver, QEvent* event) override{
+
+            try {
+                QApplication::notify(receiver, event);
+            }  catch (Exceptions *e) {
+                qDebug() << "e->endOfChain();!";
+                e->endOfChain();
+            }
+
+            return true;
+        }
+};
+
 int main(int argc, char *argv[])
 {
 
-    QApplication a(argc, argv);
+    MyApplication myApp(argc, argv);
 
     MainWindow w;
 
-    Adapter_Creator adapt_create(&w);
+    myApp.setMainWidget(&w);
 
-    QObject::connect(w.bookEntry, &BookEntry::incoming_NewContact, &adapt_create, &Adapter_Creator::addRowToTable);
-    QObject::connect(w.bookEntry, &BookEntry::saveEvent, &w, &MainWindow::saveJsonTable);
-    QObject::connect(&a, &QApplication::aboutToQuit, &w, &MainWindow::saveJsonTable);
+    QObject::connect(&myApp, &QApplication::aboutToQuit, &w, &MainWindow::saveJsonTable);
 
-    w.show();
+    myApp.startProg();
 
-    return a.exec();
+    return 1;
 
 }
 

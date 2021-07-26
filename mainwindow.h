@@ -37,6 +37,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+
+
     public:
 
         enum SortType{
@@ -55,6 +57,11 @@ class MainWindow : public QMainWindow
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
+
+
+        void show();
+        void determineConnects();
+
         bool saveJsonTable();
         bool loadJsontable();
         bool backUpTable();
@@ -63,9 +70,6 @@ class MainWindow : public QMainWindow
         virtual void addRowToTable(const QJsonArray &jsonRow);
         virtual void updateTable();
         void deleteRow();
-
-
-        void show();
 
 
         void initiateSort();

@@ -23,6 +23,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableView->setModel(&itemModel);
 
+
+}
+
+
+void MainWindow::show(){
+    determineConnects();
+    loadJsontable();
+    this->QMainWindow::show();
+}
+
+void MainWindow::determineConnects(){
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
     connect(ui->comboBox_SortBook, QOverload<int>::of(&QComboBox::currentIndexChanged),
             [this](int sortType){
                 currentSort = sortType;
@@ -39,11 +53,16 @@ MainWindow::MainWindow(QWidget *parent)
             }
     );
 
+    QObject::connect(bookEntry, &BookEntry::incoming_NewContact, this, [this](const QJsonArray &jsonRow){
+                                                                            Adapter_Creator adapt_create(this);
+                                                                            adapt_create.addRowToTable(jsonRow);
+                                                                        });
+    QObject::connect(bookEntry, &BookEntry::saveEvent, this, &MainWindow::saveJsonTable);
+
     connect(ui->pushButton_Delete, &QPushButton::clicked, this, &MainWindow::deleteRow);
     connect(ui->pushButton_RestoreTable, &QPushButton::clicked, this, &MainWindow::messageAboutResetTable);
 
     connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
-
 }
 
 void MainWindow::changeContact(QStandardItem *item){
@@ -239,16 +258,23 @@ bool MainWindow::backUpTable(){
 
 
 void MainWindow::addRowToTable(const QJsonArray &jsonRow){
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 
-    int columnCount = jsonRow.size();
-    int i = itemModel.rowCount();
+    const int columnCount = jsonRow.size();
+    const int i = itemModel.rowCount();
+
     for(int j = 0; j < columnCount; j++){
         QString s = jsonRow[j].toString();
         itemModel.setItem(i, j, new QStandardItem(s));
     }
+
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 }
 
+
 void MainWindow::initiateSort(){
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
 
     std::string ASC_or_DESC;
 
@@ -264,16 +290,24 @@ void MainWindow::initiateSort(){
         case SortByBirthday: book.sortByBirthday(ASC_or_DESC); break;
         case SortByAddDate:  book.sortByAddDate(ASC_or_DESC); break;
     }
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
 }
 
 void MainWindow::updateTable(){
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
     Adapter_Creator adapt_create(this);
     adapt_create.updateTable();
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
 }
 
 void MainWindow::deleteRow(){
+
+    disconnect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
     QItemSelectionModel *selections = ui->tableView->selectionModel();
     QModelIndexList selected = selections->selectedIndexes();
+    if(selected.isEmpty()) return;
 
     QModelIndex index = selected.first();
 
@@ -281,10 +315,10 @@ void MainWindow::deleteRow(){
         itemModel.removeRow(index.row());
         book.deleteContact(index.row());
     }
+    connect(&itemModel, &QStandardItemModel::itemChanged, this, &MainWindow::changeContact);
+
 }
 
-void MainWindow::show(){
-    loadJsontable();
-    this->QMainWindow::show();
-}
+
+
 
