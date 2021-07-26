@@ -45,58 +45,66 @@ void date::setDate(const std::string &string_date){
     int lenght = 0;
     int count = 0;
 
-    if(!date_int_string.empty()) date_int_string.clear();
-    // функция чисто для того чтобы сформировать строку по определенному шаблону
-    std::function<std::string(int, std::string)> templateNum = [&string_date](int len, std::string s_){
-        if(len < (int)s_.size()){
-            Exceptions *da = new Date_Exception_OutOfRangeOfParam("constructor date(" + string_date +")");
-            throw da;
-        }
-        int position = len - (int)s_.size();
-        std::string s(position, '0');
-        s.insert( position, s_);
-        return s;
-    };
+    std::vector<std::pair<int, std::string>> draft;
 
     try {
-        for (std::string::size_type i = 0; i < string_date.size()+1; i++) { // разбиение строки даты на составляющие
-
-            if(std::isdigit(string_date[i])) {
-                lenght++;
-            }
-            else
-            // понадобилось сделать так, чтобы строки дня, месяца, года подчинялась определенному шаблону
-            // это нужно было в дальнейшем для алгоритма сортировки контактов по дате
-            if (string_date[i] == '.' || i == string_date.size() ){
-                if(i + 1 == string_date.size()) lenght++, count++;
-                count++;
-                std::string s = string_date.substr(start, lenght);
-                if(count == 1) s = templateNum(2, s);
-                if(count == 2) s = templateNum(2, s);
-                if(count == 3) s = templateNum(4, s);
-                int number = std::stoi(s);
-                date_int_string.push_back(make_pair(number, s));
-                start += lenght + 1;
-                lenght = 0;
-            }
-            else{
+        for(const char &c : string_date){
+            if(std::isalpha(c)) {
                 Exceptions *da = new Date_Exception_AlphaInside("constructor date(" + string_date +")");
                 throw da;
             }
         }
-        if(date_int_string.size() != 3){
+        
+        // функция чисто для того чтобы сформировать строку по определенному шаблону
+        std::function<std::string(int, std::string)> templateNum = [&string_date](int len, std::string s_){
+            if(len < (int)s_.size()){
+                Exceptions *da = new Date_Exception_OutOfRangeOfParam("constructor date(" + string_date +")");
+                throw da;
+            }
+            int position = len - (int)s_.size();
+            std::string s(position, '0');
+            s.insert( position, s_);
+            return s;
+        };
+
+        for (std::string::size_type i = 0; i < string_date.size()+1; i++) { // разбиение строки даты на составляющие
+            
+            if(std::isdigit(string_date[i])) {
+                lenght++;
+            }
+            else{
+                // понадобилось сделать так, чтобы строки дня, месяца, года подчинялась определенному шаблону
+                // это нужно было в дальнейшем для алгоритма сортировки контактов по дате
+                if (string_date[i] == '.' || i == string_date.size()){
+                    if(i + 1 == string_date.size()) lenght++, count++;
+                    count++;
+                    std::string s = string_date.substr(start, lenght);
+                    if(count == 1) s = templateNum(2, s);
+                    if(count == 2) s = templateNum(2, s);
+                    if(count == 3) s = templateNum(4, s);
+                    int number = std::stoi(s);
+                    draft.push_back(make_pair(number, s));
+                    start += lenght + 1;
+                    lenght = 0;
+                }
+            }
+        }
+        if(draft.size() != 3){
             Exceptions *da = new Date_Exception_WrongCountOfParameters("constructor date(" + string_date +")");
             throw da;
         }
         Exceptions *da = new Date_Exception_OutOfRangeOfParam("constructor date(" + string_date +")");
-
-        if (!(0 < date_int_string[0].first && date_int_string[0].first < 32)) throw da;
-        if (!(0 < date_int_string[1].first && date_int_string[1].first < 13)) throw da;
-        if (!(0 < date_int_string[2].first && date_int_string[2].first < 10000)) throw da;
+        
+        if (!(0 < draft[0].first && draft[0].first < 32)) throw da;
+        if (!(0 < draft[1].first && draft[1].first < 13)) throw da;
+        if (!(0 < draft[2].first && draft[2].first < 10000)) throw da;
         delete da;
+
     }  catch (Exceptions *e) {
         e->what();
     }
+
+    date_int_string = draft;
 }
 
 
@@ -110,7 +118,7 @@ Contact::Contact(int id_, std::string name_, std::string email_, date birthday_,
 
 Contact::Contact(const std::vector<std::string> &vectorParam){
     if((int)vectorParam.size() == countOfParameters){
-        id = std::stoi(vectorParam[0]);
+        setId(vectorParam[0]);
         name = vectorParam[1];
         email = vectorParam[2];
         birthday = date(vectorParam[3]);
@@ -120,10 +128,18 @@ Contact::Contact(const std::vector<std::string> &vectorParam){
 
 void Contact::setId(const std::string &id_){
     bool is = true;
-    for(const char &c : id_){
-        if(!std::isdigit(c)) is = false;
+    try {
+        for(const char &c : id_){
+            if(!std::isdigit(c)){ is = false; break; }
+        }
+        if(is) id = std::stoi(id_);
+        else{
+            Exceptions *da = new Id_Exception_AlphaInside("set Id("+id_+")");
+            throw da;
+        }
+    }  catch (Exceptions *e) {
+        e->what();
     }
-    if(is) id = std::stoi(id_);
 
 }
 

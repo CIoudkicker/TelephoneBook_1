@@ -79,6 +79,7 @@ class MainWindow : public QMainWindow
 
         void changeContact(QStandardItem *item);
 
+
         Book book;
         BookEntry *bookEntry;
         QStandardItemModel itemModel;

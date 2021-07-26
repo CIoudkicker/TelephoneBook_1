@@ -122,5 +122,16 @@ class FileOpen_Exceptions : public Exceptions{
     FileOpen_Exceptions(FileOpen_Exceptions &arg);
 };
 
+class Id_Exception_AlphaInside : public Exceptions{
+    public:
+
+    Id_Exception_AlphaInside(std::string arg);
+
+    Id_Exception_AlphaInside(Id_Exception_AlphaInside &arg);
+
+    void what() override;
+
+};
+
 
 #endif // EXCEPTIONS_H

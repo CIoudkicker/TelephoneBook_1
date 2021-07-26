@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableView->setModel(&itemModel);
 
-
 }
 
 
@@ -66,19 +65,26 @@ void MainWindow::determineConnects(){
 }
 
 void MainWindow::changeContact(QStandardItem *item){
+
     int m = item->row();
     int n = item->column();
     std::string s = itemModel.item(m,n)->text().toStdString();
 
     Contact &c = book[m];
 
-    switch (n) {
-        case 0: c.setId(s); break;
-        case 1: c.setName(s); break;
-        case 2: c.setEmail(s); break;
-        case 3: c.setBirthday(s); break;
-        case 4: c.setAddDate(s); break;
+    try {
+        switch (n) {
+            case 0: c.setId(s); break;
+            case 1: c.setName(s); break;
+            case 2: c.setEmail(s); break;
+            case 3: c.setBirthday(s); break;
+            case 4: c.setAddDate(s); break;
+        }
+    }  catch (Exceptions *e) {
+        updateTable();
+        e->endOfChain();
     }
+    return;
 }
 
 void MainWindow::messageAboutResetTable(){

@@ -98,3 +98,13 @@ FileOpen_Exceptions::FileOpen_Exceptions(std::string arg) : Exceptions("FileOpen
 FileOpen_Exceptions::FileOpen_Exceptions(FileOpen_Exceptions &arg) : Exceptions(arg){
 
 }
+
+Id_Exception_AlphaInside::Id_Exception_AlphaInside(std::string arg) : Exceptions("Id_Exception_AlphaInside: " + arg + ": Wrong id. Found alphabet character"){
+
+}
+
+void Id_Exception_AlphaInside::what(){ Exceptions::what(Show); }
+
+Id_Exception_AlphaInside::Id_Exception_AlphaInside(Id_Exception_AlphaInside &arg) : Exceptions(arg){
+
+}
