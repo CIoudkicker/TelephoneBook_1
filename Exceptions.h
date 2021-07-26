@@ -5,7 +5,12 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <QString>
+#include <QDebug>
+#include <QMessageBox>
+#include <QWidget>
 
+//
 using namespace std;
 
 class Exceptions{
@@ -16,12 +21,27 @@ class Exceptions{
 
     public:
 
+        enum MessageBoxShow{
+            DontShow,
+            Show
+        };
+
         Exceptions();
         Exceptions(std::string arg_message);
         Exceptions(Exceptions &arg);
-        ~Exceptions();
+        virtual ~Exceptions();
 
-        std::string what();
+        virtual void what();
+        void what(MessageBoxShow msg_box);
+
+        void endOfChain(){
+            delete this;
+        };
+
+    protected:
+
+        MessageBoxShow MsgBoxStatus;
+        bool executeOnce = true;
 };
 
 
@@ -40,12 +60,13 @@ class ASC_DESC_Exception : public Exceptions
 class Date_Exception : public Exceptions
 {
 
-
     public:
 
     Date_Exception(std::string arg);
 
     Date_Exception(Date_Exception &arg);
+
+    void what() override;
 
 };
 
